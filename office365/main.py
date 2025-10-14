@@ -11,7 +11,7 @@ import ngrok
 
 load_dotenv()
 
-NGROK_AUTH_TOKEN = getenv("NGROK_AUTH_TOKEN", "")
+NGROK_AUTH_TOKEN = getenv("NGROK_AUTHTOKEN", "")
 APPLICATION_PORT = 5000
 
 
