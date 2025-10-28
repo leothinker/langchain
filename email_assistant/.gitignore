@@ -1,0 +1,3 @@
+.secrets/
+uv.lock
+o365_token.txt
