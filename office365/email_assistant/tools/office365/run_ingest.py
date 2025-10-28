@@ -168,9 +168,6 @@ async def fetch_and_process_emails():
     # Process emails
     processed_count = 0
 
-    mailbox = service.mailbox()
-    mailbox.new_message()
-
     try:
         # Get messages from the specified email address
         email_address = "scliu.leo@outlook.com"
@@ -184,7 +181,7 @@ async def fetch_and_process_emails():
 
         # Execute the search
         query = mailbox.q().search(query)
-        messages = list(mailbox.get_messages(limit=max_results, query=query))
+        messages = list(mailbox.get_messages(limit=max_results))
 
         if not messages:
             print("No emails found matching the criteria")
@@ -202,11 +199,12 @@ async def fetch_and_process_emails():
             print(f"From: {email_data['from_email']}")
             print(f"Subject: {email_data['subject']}")
             print(f"Content: {email_data['page_content']}")
+            print(f"ID: {email_data['id']}")
 
             # Ingest to LangGraph
-            thread_id, run = await ingest_email_to_langgraph(
-                email_data, "email_assistant"
-            )
+            # thread_id, run = await ingest_email_to_langgraph(
+            #     email_data, "email_assistant"
+            # )
 
             processed_count += 1
             return 0

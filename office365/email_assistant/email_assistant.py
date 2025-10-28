@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langgraph.graph import END, START, StateGraph
 
-from prompts import (
+from email_assistant.prompts import (
     agent_system_prompt,
     default_background,
     default_response_preferences,
 )
-from schemas import State
+from email_assistant.schemas import State
 
 # from tools import get_tools, get_tools_by_name
 

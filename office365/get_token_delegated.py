@@ -30,8 +30,8 @@ print(flow["message"])  # 直接复制到浏览器
 print("=== 等待授权完成后脚本会继续 ===\n")
 result = app.acquire_token_by_device_flow(flow)  # 轮询等待用户完成
 
-# token_response = app.acquire_token_interactive(scopes=SCOPES)
-# access_token = token_response.get("access_token")
+# result = app.acquire_token_interactive(scopes=SCOPES)
+# access_token = result.get("access_token")
 
 
 if "error" in result:

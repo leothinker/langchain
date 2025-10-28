@@ -1,22 +1,29 @@
 # main.py
-import json
-import os
 from contextlib import asynccontextmanager
 from os import getenv
 
-import requests
+import ngrok
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, Request, Response
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, Request, Response
 from loguru import logger
-
-import ngrok
+from msal import ConfidentialClientApplication
 
 load_dotenv()
 
 NGROK_AUTH_TOKEN = getenv("NGROK_AUTHTOKEN", "")
 APPLICATION_PORT = 5000
+
+AZURE_APP_ID = getenv("AZURE_CLIENT_ID", "")
+AZURE_APP_TENANT = getenv("AZURE_TENANT_ID", "")
+AZURE_APP_SECRET = getenv("AZURE_CLIENT_SECRET", "")
+SCOPES = ["https://graph.microsoft.com/.default"]
+REDIRECT_URI = getenv("REDIRECT_URI", "")
+msal_app = ConfidentialClientApplication(
+    client_id=AZURE_APP_ID,
+    client_credential=AZURE_APP_SECRET,
+    authority=f"https://login.microsoftonline.com/{AZURE_APP_TENANT}/",
+)
 
 
 @asynccontextmanager
@@ -40,35 +47,55 @@ async def root():
 
 
 @app.post("/webhook")
-async def handle_webhook(request: Request, background: BackgroundTasks):
-    if "validationToken" in request.query_params:
-        return PlainTextResponse(content=request.query_params["validationToken"])
+async def webhook(request: Request):
+    logger.info("==================webhook triggered==================")
 
-    payload = await request.json()
-    logger.debug(f"🔥 收到 webhook payload: {json.dumps(payload)[:200]}")
+    params = dict(request.query_params)
+    if "validationToken" in params:
+        token = params["validationToken"]
+        logger.info(f"Validation token received: {token}")
+        return Response(content=token, media_type="text/plain")
 
-    # if payload.get("clientState") != CLIENT_STATE:
-    #     logger.warning("clientState 不匹配，可能是测试/伪造请求")
-    #     return Response(status_code=400, content="Invalid clientState")
+    body = await request.body()
+    try:
+        body_str = body.decode("utf-8")
+    except Exception:
+        body_str = str(body)
+    logger.info(f"Webhook body: {body_str}")
 
-    handle_change(payload)
+    return Response(status_code=200)
 
 
-def handle_change(body: dict):
-    """
-    这里演示读取最小的字段，你可以在正式环境里再调用 Graph
-    再去取完整邮件的详情（subject、from …）。
-    """
-    logger.info("处理邮件变更")
-    for entry in body.get("value", []):
-        if entry.get("changeType") != "created":
-            continue
+@app.post("/lifecycle")
+def lifecycle(validationToken: str):
+    print("==================lifecycle==================")
+    if validationToken:
+        return Response(content=validationToken, media_type="text/plain")
 
-        msg_id = entry["resourceData"]["id"]
-        subject = entry["resourceData"].get("subject", "(no subject)")
-        sender = entry["resourceData"]["from"]["emailAddress"]["address"]
-        logger.info(f"📧 模拟邮件 → ID:{msg_id}  Subject:{subject!r}  From:{sender}")
-        # TODO：这里可以写入 DB、发到 Slack、调用业务逻辑等
+
+@app.get("/oauth2/nativeclient")
+async def auth_callback(code: str, state: str | None = None):
+    # 用 code 换 token 等逻辑
+    print("==================auth_callback==================")
+    if not code:
+        return {"error": "no code in callback"}
+
+    result = msal_app.acquire_token_by_authorization_code(
+        code, scopes=SCOPES, redirect_uri=REDIRECT_URI
+    )
+
+    if "access_token" in result:
+        access_token = result["access_token"]
+        refresh_token = result.get("refresh_token")
+        print("✅ 授权成功")
+        print("access_token:\n", access_token)
+        print("refresh_token:\n", refresh_token)
+        return {"message": "Logged in", "access_token": access_token}
+    else:
+        return {
+            "error": result.get("error"),
+            "error_description": result.get("error_description"),
+        }
 
 
 if __name__ == "__main__":
