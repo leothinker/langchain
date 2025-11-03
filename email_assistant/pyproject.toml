@@ -1,5 +1,5 @@
 [project]
-name = "office365"
+name = "email-assistant"
 version = "0.1.0"
 description = ""
 readme = "README.md"

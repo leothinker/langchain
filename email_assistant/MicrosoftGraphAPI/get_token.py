@@ -10,8 +10,15 @@ AZURE_APP_TENANT = getenv("AZURE_TENANT_ID", "")
 AZURE_APP_SECRET = getenv("AZURE_CLIENT_SECRET", "")
 REDIRECT_URI = getenv("REDIRECT_URI", "")
 
-# scopes = ["https://graph.microsoft.com/.default"]
-scopes = ["Mail.Read", "Mail.ReadBasic"]
+scopes = ["https://graph.microsoft.com/.default"]
+# scopes = [
+#     "Mail.Read",
+#     "Mail.ReadBasic",
+#     "Mail.ReadWrite",
+#     "Mail.Send",
+#     "User.Read",
+#     "User.ReadBasic.All",
+# ]
 
 
 def _getToken():
@@ -27,11 +34,8 @@ def _getToken():
         authority=f"https://login.microsoftonline.com/{AZURE_APP_TENANT}/",
     )
 
-    token = instance.get_authorization_request_url(
-        scopes=scopes,
-        redirect_uri=REDIRECT_URI,
-    )
-    access_token = token
+    token = instance.acquire_token_for_client(scopes=scopes)
+    access_token = token["access_token"]
 
     if access_token:
         return access_token
