@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      #chatBox {
+        height: 400px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+      .message {
+        margin: 10px 0;
+        padding: 8px;
+        border-radius: 5px;
+      }
+      .my-message {
+        background-color: #e3f2fd;
+        text-align: right;
+      }
+      .other-message {
+        background-color: #f5f5f5;
+      }
+      .system-message {
+        background-color: #fff3cd;
+        text-align: center;
+        font-style: italic;
+      }
+      .user-info {
+        color: #666;
+        font-size: 0.8em;
+      }
+      .input-area {
+        display: flex;
+        gap: 10px;
+      }
+      input,
+      button {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      input {
+        flex: 1;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #userList {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>WebSocket 聊天室</h1>
+
+      <div>
+        <input
+          type="text"
+          id="usernameInput"
+          placeholder="请输入您的用户名"
+          value="用户"
+        />
+        <button onclick="connect()">连接聊天室</button>
+        <button onclick="disconnect()" id="disconnectBtn" disabled>
+          断开连接
+        </button>
+      </div>
+
+      <div id="userList">
+        <strong>在线用户:</strong>
+        <div id="users"></div>
+      </div>
+
+      <div id="chatBox"></div>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="输入消息..."
+          disabled
+        />
+        <button onclick="sendMessage()" id="sendBtn" disabled>发送</button>
+      </div>
+
+      <div style="margin-top: 10px">
+        <button onclick="clearChat()">清空聊天记录</button>
+      </div>
+    </div>
+
+    <script>
+      let ws = null;
+      let currentUser = null;
+
+      function connect() {
+        const username =
+          document.getElementById("usernameInput").value || "匿名用户";
+        const user_id = "user_" + Date.now();
+        currentUser = user_id;
+
+        ws = new WebSocket(
+          `ws://localhost:8000/ws/${user_id}?username=${encodeURIComponent(
+            username
+          )}`
+        );
+
+        ws.onopen = function () {
+          document.getElementById("disconnectBtn").disabled = false;
+          document.getElementById("sendBtn").disabled = false;
+          document.getElementById("messageInput").disabled = false;
+          document.getElementById("usernameInput").disabled = true;
+          addMessage("系统", "已连接到聊天室", "system-message");
+        };
+
+        ws.onmessage = function (event) {
+          const data = JSON.parse(event.data);
+          handleMessage(data);
+        };
+
+        ws.onclose = function () {
+          addMessage("系统", "连接已断开", "system-message");
+          document.getElementById("disconnectBtn").disabled = true;
+          document.getElementById("sendBtn").disabled = true;
+          document.getElementById("messageInput").disabled = true;
+          document.getElementById("usernameInput").disabled = false;
+        };
+      }
+
+      function disconnect() {
+        if (ws) {
+          ws.close();
+        }
+      }
+
+      function sendMessage() {
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+
+        if (message && ws) {
+          const messageData = {
+            type: "chat_message",
+            content: message,
+            timestamp: new Date().toISOString(),
+          };
+          ws.send(JSON.stringify(messageData));
+          messageInput.value = "";
+        }
+      }
+
+      function handleMessage(data) {
+        switch (data.type) {
+          case "chat_message":
+            const messageClass =
+              data.user_id === currentUser ? "my-message" : "other-message";
+            addMessage(
+              data.username,
+              data.content,
+              messageClass,
+              data.timestamp
+            );
+            break;
+          case "user_join":
+          case "user_leave":
+            addMessage("系统", data.message, "system-message");
+            updateOnlineUsers(data.online_users);
+            break;
+          case "user_list":
+            updateUserList(data.users);
+            break;
+          case "private_message":
+            addMessage(
+              `[私信] ${data.from_username}`,
+              data.content,
+              "other-message",
+              data.timestamp
+            );
+            break;
+        }
+      }
+
+      function addMessage(username, content, messageClass, timestamp = null) {
+        const chatBox = document.getElementById("chatBox");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${messageClass}`;
+
+        const timeStr = timestamp
+          ? new Date(timestamp).toLocaleTimeString()
+          : new Date().toLocaleTimeString();
+        messageDiv.innerHTML = `
+                <div class="user-info">${username} - ${timeStr}</div>
+                <div>${content}</div>
+            `;
+
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function updateOnlineUsers(count) {
+        document.getElementById("users").innerHTML = `在线用户数: ${count}`;
+      }
+
+      function updateUserList(users) {
+        const userList = document.getElementById("users");
+        userList.innerHTML =
+          "<strong>在线用户:</strong><br>" +
+          Object.values(users)
+            .map(
+              (user) =>
+                `${user.username} (${new Date(
+                  user.connected_at
+                ).toLocaleTimeString()})`
+            )
+            .join("<br>");
+      }
+
+      function clearChat() {
+        document.getElementById("chatBox").innerHTML = "";
+      }
+
+      // 按Enter发送消息
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+    </script>
+  </body>
+</html>

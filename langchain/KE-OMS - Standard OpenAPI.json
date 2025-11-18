@@ -1,0 +1,2280 @@
+{
+    "openapi": "3.1.0",
+    "x-stoplight": {
+        "id": "7c1d6dd447d1e"
+    },
+    "info": {
+        "title": "KE OMS Order Pack Flow",
+        "version": "1.1",
+        "summary": "https://openapi.kec-app.com",
+        "description": "Kerry Express (Hong Kong) Order Management System OpenAPI for last mile delivery\t \n\nKE OMS - Get Token https://keoms.stoplight.io/docs/ke-oms/branches/main/8778c015598c5-ke-oms-get-token \t \n\nKE OMS - Create LMD Order https://keoms.stoplight.io/docs/ke-oms/branches/main/2f51ecb7e7c5d-ke-oms-create-lmd-order\n\nKE OMS - Pick Up Request https://keoms.stoplight.io/docs/ke-oms/branches/main/9460ed560e725-ke-oms-pick-up-request\n\nKE OMS - Get Status (Pull) https://keoms.stoplight.io/docs/ke-oms/branches/main/a7f0c0923d4e0-ke-oms-get-status-pull\n\nKE OMS - Get Self Pick Location https://keoms.stoplight.io/docs/ke-oms/branches/main/479863011d429-ke-oms-get-self-pick-location\n\nKE OMS - Status Return (Webhook) https://keoms.stoplight.io/docs/ke-oms/branches/main/a219bcc7ec2f4-ke-oms-status-return-webhook\n"
+    },
+    "servers": [
+        {
+            "url": "https://openapi.kec-app.com",
+            "description": "Production"
+        },
+        {
+            "url": "https://stg-openapi.kec-app.com",
+            "description": "Staging Environment"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "summary": "2.1 - Get Token",
+                "operationId": "2.1",
+                "responses": {
+                    "200": {
+                        "description": "Return success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjM2OCwidXNlck5hbWUiOiJsbWQudGVzdDIiLCJpYXQiOjE2NjAxODQwNjEsImV4cCI6MTY2MTM5MzY2MX0.3Vld1ZxSA8kc0M-L-lxOXgZ79eRmIv7uiwRzUYR-M88",
+                                                "expires_in": 86400
+                                            }
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "description": "Login token"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer",
+                                                    "description": "Default : 24 hours x 3600 seconds = 86400\n; Note: Once the token expired, you need to call this web service to retrieve a new token.\n"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message"
+                                    ]
+                                },
+                                "examples": {
+                                    "Success": {
+                                        "value": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjI4NywidXNlck5hbWUiOiJtaWNoYWVsLndvbmciLCJpYXQiOjE2NjAyMDI2NzYsImV4cCI6MTY2MTQxMjI3Nn0.jzPTL3IHancCrVJEeRTrWOuGpWqk9SOiAf3xcVcSCs",
+                                                "expires_in": 86400
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "403",
+                                            "message": "Incorrect password, please retry",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Incorrect password": {
+                                        "value": {
+                                            "code": "403",
+                                            "message": "Incorrect password, please retry",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "username": "lmd.test2",
+                                        "password": "12345678"
+                                    }
+                                },
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "description": "Username provided by KEHK"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "Password provided by KEHK"
+                                    }
+                                },
+                                "required": [
+                                    "username",
+                                    "password"
+                                ]
+                            },
+                            "examples": {
+                                "Testing Account": {
+                                    "value": {
+                                        "username": "ketesting",
+                                        "password": "12345678"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                },
+                "description": "Login by username and password, then return token"
+            },
+            "parameters": []
+        },
+        "/lmd/createonedo": {
+            "post": {
+                "summary": "2.2 - Create LMD Order",
+                "operationId": "2.2",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "reference_number": "MICTEST20220811G",
+                                                "tracking_number": "MICTEST20220811G",
+                                                "label_url": "https://openapi.kec-app.com//label/downLoadFile/MICTEST20220811G"
+                                            }
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "required": [
+                                                "reference_number",
+                                                "tracking_number",
+                                                "label_url"
+                                            ],
+                                            "properties": {
+                                                "reference_number": {
+                                                    "type": "string",
+                                                    "description": "Customer order number"
+                                                },
+                                                "tracking_number": {
+                                                    "type": "string",
+                                                    "description": "Master tracking number assigned "
+                                                },
+                                                "label_url": {
+                                                    "type": "string",
+                                                    "description": "Last mile label url "
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Success Response": {
+                                        "value": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "reference_number": "KETESTINGORDER001",
+                                                "tracking_number": "MICTEST20220811G",
+                                                "label_url": "https://openapi.kec-app.com//label/downLoadFile/MICTEST20220811G"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "400",
+                                            "message": "The declare value should not larger than 1 million",
+                                            "data": null
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "The service does not support that huge amount of parcel declare value": {
+                                        "value": {
+                                            "code": "400",
+                                            "message": "The declare value should not larger than 1 million",
+                                            "data": null
+                                        }
+                                    },
+                                    "Invalid receiver mobile phone number": {
+                                        "value": {
+                                            "code": "400",
+                                            "message": "receiver mobile phone number is not valid",
+                                            "data": null
+                                        }
+                                    },
+                                    "Invalid Selfpick location": {
+                                        "value": {
+                                            "code": "400",
+                                            "message": "Cannot found SP location ID by LL1007",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Session expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Session expired": {
+                                        "value": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Duplicate Reference Number",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "409",
+                                            "message": "Duplicate Reference Number KETESTSMSORDER0010 is used for tracking number[KECHK21375916001]",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "example-1": {
+                                        "value": {
+                                            "code": "409",
+                                            "message": "Duplicate Reference Number KETESTINGORDER001 is used for tracking number[KECHK21375916001]",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Creating a single last-mile delivery order\n",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjEzNDksInVzZXJOYW1lIjoibWljLmxtZHRlc3QiLCJpYXQiOjE2NjAyMDk2MTYsImV4cCI6MTY2MTQxOTIxNn0.VKcAx9kvGlueGs8OhJAL2_0p_cgikugc74G8aqbqkl8"
+                        },
+                        "description": "Token generated by /auth/login"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "service": {
+                                            "channel_code": "LMD",
+                                            "service_type": "HD",
+                                            "delivery_time ": "12:00 - 16:00"
+                                        },
+                                        "package": {
+                                            "reference_number": "MICTEST20220811G",
+                                            "tracking_number": "MICTEST20220811G",
+                                            "total_qty": 1,
+                                            "declared_value": 100,
+                                            "declared_value_currency": "HKD",
+                                            "shipping_date": "2022-06-08",
+                                            "ead_date": "2022-06-21",
+                                            "actual_weight": 100000.55,
+                                            "length": 10,
+                                            "width": 15,
+                                            "height": 20,
+                                            "payment_method": "PP",
+                                            "cod_value": 0,
+                                            "cod_currency": "HKD",
+                                            "fod_value": 0,
+                                            "fod_value_currency": "HKD",
+                                            "remark": "Remark field"
+                                        },
+                                        "sender": {
+                                            "name": "Michael",
+                                            "address": "F20 International Trade Center, 1234 Queen St",
+                                            "distinct": "Central",
+                                            "city": "HK",
+                                            "country": "HK",
+                                            "phone": "12345678"
+                                        },
+                                        "receiver": {
+                                            "name": "Mic As Consignee",
+                                            "address": "3/F, Yeung Yiu Chung (No.6) Industrial Building, 19 Cheung Shun Street, Lai Chi Kok, Kowloon",
+                                            "distinct": "HK",
+                                            "city": "HK",
+                                            "country": "HK",
+                                            "phone": "63559480"
+                                        },
+                                        "items": [
+                                            {
+                                                "sku": "186777",
+                                                "description": "Skincare",
+                                                "unit_price": 1,
+                                                "currency": "HKD",
+                                                "qty": 10
+                                            }
+                                        ],
+                                        "udf1": "TESTING"
+                                    }
+                                },
+                                "properties": {
+                                    "service": {
+                                        "type": "object",
+                                        "required": [
+                                            "channel_code",
+                                            "service_type"
+                                        ],
+                                        "properties": {
+                                            "channel_code": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "LMD"
+                                                ],
+                                                "description": "STRING (3) ; Default as LMD"
+                                            },
+                                            "service_type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "HD",
+                                                    "SP"
+                                                ],
+                                                "description": "STRING (2) ; HD: Home delivery ; SP: Self-pick"
+                                            },
+                                            "delivery_instruction": {
+                                                "type": "string",
+                                                "description": "STRING (15) ; If Self-Pick (SP), please fill in the SP location code.",
+                                                "example": "LL10074"
+                                            },
+                                            "delivery_time ": {
+                                                "type": "string",
+                                                "description": "STRING (10) ; Project base use"
+                                            }
+                                        }
+                                    },
+                                    "package": {
+                                        "type": "object",
+                                        "required": [
+                                            "reference_number",
+                                            "total_qty",
+                                            "declared_value",
+                                            "declared_value_currency",
+                                            "actual_weight",
+                                            "payment_method"
+                                        ],
+                                        "properties": {
+                                            "reference_number": {
+                                                "type": "string",
+                                                "description": "STRING (20) ; Customer reference number",
+                                                "pattern": "Only accept 0-9, A-Z , _ , -"
+                                            },
+                                            "total_qty": {
+                                                "type": "integer",
+                                                "description": "INTEGER ; Default: 1 ; For multiple packages, fill in the number of packages in total"
+                                            },
+                                            "declared_value": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,5) ; Total package goods value"
+                                            },
+                                            "declared_value_currency": {
+                                                "type": "string",
+                                                "description": "STRING (3) ; Default: HKD",
+                                                "example": "HKD"
+                                            },
+                                            "shipping_date": {
+                                                "type": "string",
+                                                "description": "STRING (10) ; Parcel shipping date",
+                                                "pattern": "YYYY-MM-DD"
+                                            },
+                                            "ead_date": {
+                                                "type": "string",
+                                                "description": "STRING (10) ; Estimated delivery date to end customer",
+                                                "pattern": "YYYY-MM-DD"
+                                            },
+                                            "actual_weight": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ;Package weight (KG)"
+                                            },
+                                            "length": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ; Package length (cm)"
+                                            },
+                                            "width": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ; Package width (cm)"
+                                            },
+                                            "height": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ; Package height (cm)"
+                                            },
+                                            "payment_method": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "PP",
+                                                    "COD"
+                                                ],
+                                                "description": "STRING (3) ; PP : Prepaid ; COD : Cash on delivery "
+                                            },
+                                            "cod_value": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ; If COD as the payment method, please input amount"
+                                            },
+                                            "cod_currency": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "HKD"
+                                                ],
+                                                "description": "STRING (3) ; Default: HKD"
+                                            },
+                                            "fod_value": {
+                                                "type": "integer",
+                                                "description": "DECIMAL (10,2) ; If FOD parcel, please input amount"
+                                            },
+                                            "fod_value_currency": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "HKD"
+                                                ],
+                                                "description": "STRING (3) ; Default: HKD"
+                                            },
+                                            "remark": {
+                                                "type": "string",
+                                                "description": "STRING (40) ;Delivery instruction/note (To be printed on the label) \n"
+                                            }
+                                        }
+                                    },
+                                    "sender": {
+                                        "type": "object",
+                                        "required": [
+                                            "name",
+                                            "address",
+                                            "city",
+                                            "phone"
+                                        ],
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "STRING (64) ; Sender Name"
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "description": "STRING (255) ; Sender Address"
+                                            },
+                                            "distinct": {
+                                                "type": "string",
+                                                "description": "STRING (50) ; Sender distinct"
+                                            },
+                                            "city": {
+                                                "type": "string",
+                                                "description": "STRING (10) ; KL: Kowloon ; NT: New Territories ; HK: Hong Kong Island ; OL: Outlying Islands\n",
+                                                "enum": [
+                                                    "KL",
+                                                    "NT",
+                                                    "HK",
+                                                    "OL"
+                                                ]
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "description": "STRING (2) ; Sender Country"
+                                            },
+                                            "phone": {
+                                                "type": "string",
+                                                "description": "STRING (20) ; Sender contact number"
+                                            }
+                                        }
+                                    },
+                                    "receiver": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "STRING (64) ; Consignee Name"
+                                            },
+                                            "company": {
+                                                "type": "string",
+                                                "description": "STRING (50) ; Consignee Company Name"
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "description": "STRING (255) ; Consignee Address"
+                                            },
+                                            "distinct": {
+                                                "type": "string",
+                                                "description": "STRING (50) ; Consignee distinct"
+                                            },
+                                            "city": {
+                                                "type": "string",
+                                                "description": "STRING (10) ; KL: Kowloon ; NT: New Territories ; HK: Hong Kong Island ; OL: Outlying Islands\n",
+                                                "enum": [
+                                                    "KL",
+                                                    "NT",
+                                                    "HK",
+                                                    "OL"
+                                                ]
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "description": "STRING (2) ; Default: HK"
+                                            },
+                                            "phone": {
+                                                "type": "string",
+                                                "description": "STRING (20) ; Consignee Hong Kong contact number"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "address",
+                                            "city",
+                                            "phone"
+                                        ]
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sku": {
+                                                    "type": "string",
+                                                    "description": "STRING (50) ; Unique item code"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "description": "STRING (100) ; Item description/name"
+                                                },
+                                                "unit_price": {
+                                                    "type": "integer",
+                                                    "description": "DECIMAL (10,5) ;Unit price"
+                                                },
+                                                "currency": {
+                                                    "type": "string",
+                                                    "description": "STRING (3) ; Unit price ISO 4217 currency code"
+                                                },
+                                                "qty": {
+                                                    "type": "integer",
+                                                    "description": "INTEGER ; quantity"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "udf1": {
+                                        "type": "string",
+                                        "description": "STRING (255) ;Project base use"
+                                    }
+                                },
+                                "required": [
+                                    "service",
+                                    "package",
+                                    "sender"
+                                ]
+                            },
+                            "examples": {
+                                "Home delivery Order": {
+                                    "value": {
+                                        "service": {
+                                            "channel_code": "LMD",
+                                            "service_type": "HD"
+                                        },
+                                        "package": {
+                                            "reference_number": "KETESTINGORDER001",
+                                            "total_qty": 1,
+                                            "declared_value": 100,
+                                            "declared_value_currency": "HKD",
+                                            "shipping_date": "2022-02-16",
+                                            "ead_date": "2022-02-18",
+                                            "payment_method": "COD",
+                                            "actual_weight": 5.5,
+                                            "length": 10,
+                                            "width": 15,
+                                            "height": 20,
+                                            "cod_value": 15.1,
+                                            "cod_currency": "HKD",
+                                            "fod_value": 30.2,
+                                            "fod_value_currency": "HKD",
+                                            "remark": "Remark field"
+                                        },
+                                        "sender": {
+                                            "name": "Mic As Sender",
+                                            "address": "F20 International Trade Center, 1234 Queen St",
+                                            "distinct": "HK",
+                                            "city": "HK",
+                                            "country": "Hong Kong",
+                                            "phone": "23456789"
+                                        },
+                                        "receiver": {
+                                            "name": "Mic As Consignee",
+                                            "address": "3/F, Yeung Yiu Chung (No.6) Industrial Building, 19 Cheung Shun Street, Lai Chi Kok, Kowloon",
+                                            "distinct": "HK",
+                                            "city": "KL",
+                                            "country": "Hong Kong",
+                                            "phone": "98765432"
+                                        },
+                                        "items": [
+                                            {
+                                                "sku": "186777",
+                                                "description": "Skincare",
+                                                "unit_price": 1,
+                                                "currency": "HKD",
+                                                "qty": 10
+                                            }
+                                        ]
+                                    }
+                                },
+                                "Self-Pick Order": {
+                                    "value": {
+                                        "service": {
+                                            "channel_code": "LMD",
+                                            "service_type": "SP",
+                                            "delivery_instruction": "KERCW001A"
+                                        },
+                                        "package": {
+                                            "reference_number": "KETESTINGORDER001",
+                                            "total_qty": 1,
+                                            "declared_value": 100,
+                                            "declared_value_currency": "HKD",
+                                            "shipping_date": "2022-02-16",
+                                            "ead_date": "2022-02-18",
+                                            "payment_method": "PP",
+                                            "actual_weight": 10.5,
+                                            "length": 5,
+                                            "width": 7,
+                                            "height": 9,
+                                            "cod_value": 0,
+                                            "cod_currency": "HKD",
+                                            "fod_value": 0,
+                                            "fod_value_currency": "HKD",
+                                            "remark": "Remark field"
+                                        },
+                                        "sender": {
+                                            "name": "Mic As Sender",
+                                            "address": "F20 International Trade Center, 1234 Queen St",
+                                            "distinct": "HK",
+                                            "city": "HK",
+                                            "country": "Hong Kong",
+                                            "phone": "23456789"
+                                        },
+                                        "receiver": {
+                                            "name": "Mic As Consignee",
+                                            "address": "3/F, Yeung Yiu Chung (No.6) Industrial Building, 19 Cheung Shun Street, Lai Chi Kok, Kowloon",
+                                            "distinct": "HK",
+                                            "city": "KL",
+                                            "country": "Hong Kong",
+                                            "phone": "98765432"
+                                        },
+                                        "items": [
+                                            {
+                                                "sku": "CA1-12",
+                                                "description": "Mask",
+                                                "unit_price": 18.2,
+                                                "currency": "HKD",
+                                                "qty": 15
+                                            }
+                                        ]
+                                    }
+                                },
+                                "Sub-tracking remarks defined by API": {
+                                    "value": {
+                                        "service": {
+                                            "channel_code": "LMD",
+                                            "service_type": "HD",
+                                            "delivery_time": "12:00 - 16:00"
+                                        },
+                                        "package": {
+                                            "reference_number": "MICUATTEST20220926A",
+                                            "total_qty": 3,
+                                            "declared_value": 100,
+                                            "declared_value_currency": "HKD",
+                                            "shipping_date": "2022-09-01",
+                                            "ead_date": "2022-09-10",
+                                            "payment_method": "COD",
+                                            "remark": "TEST",
+                                            "actual_weight": 5.5,
+                                            "length": "10.0",
+                                            "width": "15.0",
+                                            "height": "20.0",
+                                            "cod_value": 100,
+                                            "cod_currency": "HKD",
+                                            "fod_value": 10,
+                                            "fod_value_currency": "HKD",
+                                            "multiple_package_data": [
+                                                {
+                                                    "remarks": "TEST2"
+                                                },
+                                                {
+                                                    "remarks": "TEST3"
+                                                }
+                                            ]
+                                        },
+                                        "sender": {
+                                            "name": "Mic TEST",
+                                            "address": "HKG-NT-KWAICHUNG Shek Lei 2 Est Shek Kwong Hse Blk Flr Flt2706",
+                                            "distinct": "HK",
+                                            "city": "HK",
+                                            "country": "HK",
+                                            "phone": "12345678"
+                                        },
+                                        "receiver": {
+                                            "name": "Mic As Consignee",
+                                            "company": "MIC COMPANY AH",
+                                            "address": "3/F, Yeung Yiu Chung (No.6) Industrial Building, 19 Cheung Shun Street, Lai Chi Kok, Kowloon",
+                                            "distinct": "Lai Chi Kok",
+                                            "city": "Kln",
+                                            "country": "HK",
+                                            "phone": "98765432"
+                                        },
+                                        "items": [
+                                            {
+                                                "sku": "186777",
+                                                "description": "Skincare",
+                                                "unit_price": 1,
+                                                "currency": "HKD",
+                                                "qty": 10
+                                            }
+                                        ],
+                                        "udf1": "UDF1"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                }
+            }
+        },
+        "/lmd/getstatusupdate": {
+            "post": {
+                "summary": "2.5 - Get Status (Pull)",
+                "operationId": "2.5",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "packages": [
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KECHK21099274701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "1000",
+                                                    "description": "Order received",
+                                                    "event_time": "2022-06-28T14:17:41"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KECHK21099274701",
+                                                    "status_type": "MESSAGE",
+                                                    "status_number": "2909",
+                                                    "description": "PREALEART_SUCCESS",
+                                                    "event_time": "2022-06-28T14:17:42"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KECHK21099274701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2300",
+                                                    "description": "Delivery in progress",
+                                                    "event_time": "2022-07-04T17:47:37"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KECHK21099274701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2500",
+                                                    "description": "Package delivered",
+                                                    "event_time": "2022-07-04T17:48:14"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "properties": {
+                                        "packages": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "order_type": {
+                                                        "type": "string",
+                                                        "description": "Default: LMD",
+                                                        "example": "LMD"
+                                                    },
+                                                    "tracking_number": {
+                                                        "type": "string",
+                                                        "description": "Master tracking number assigned ",
+                                                        "example": "KE0000148335701"
+                                                    },
+                                                    "status_type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "NORMAL",
+                                                            "MESSAGE",
+                                                            "EXCEPTION"
+                                                        ],
+                                                        "description": "NORMAL: Normal Delivery status ; MESSAGE: System process status ; EXCEPTION: Exception status"
+                                                    },
+                                                    "status_number": {
+                                                        "type": "string",
+                                                        "description": "Status number (refer to status list) "
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "description": "Status description in English"
+                                                    },
+                                                    "cn_description": {
+                                                        "type": "string",
+                                                        "x-stoplight": {
+                                                            "id": "mezhhdbnkk5u7"
+                                                        },
+                                                        "description": "Status description in Chinese"
+                                                    },
+                                                    "event_time": {
+                                                        "type": "string",
+                                                        "description": "Status event time (GMT+8)",
+                                                        "pattern": "YYYY-MM-DDTHH:MM:SS",
+                                                        "example": "2022-01-01T09:01:02"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "order_type",
+                                                    "tracking_number",
+                                                    "status_type",
+                                                    "status_number",
+                                                    "description",
+                                                    "cn_description",
+                                                    "event_time"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "packages"
+                                    ]
+                                },
+                                "examples": {
+                                    "Success Response": {
+                                        "value": {
+                                            "packages": [
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "1000",
+                                                    "description": "Kerry Express has received the order information.  The package is not yet received by Kerry Express. ",
+                                                    "cn_description": "嘉里快遞已收到運單資訊，正等待寄件人轉交快件給嘉里快遞",
+                                                    "event_time": "2023-05-03T14:34:58"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2201",
+                                                    "description": "Shipment arrived at Kerry Express sortation hub",
+                                                    "cn_description": "快件已到達嘉里快遞分揀中心",
+                                                    "event_time": "2023-05-03T17:34:52"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2205",
+                                                    "description": "Sortation is completed, preparing for delivery",
+                                                    "cn_description": "快件分揀完成, 正準備派送",
+                                                    "event_time": "2023-05-03T23:18:56"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2300",
+                                                    "description": "Shipment is on the way of delivery",
+                                                    "cn_description": "快件已被快遞員提取，正在派送中",
+                                                    "event_time": "2023-05-04T10:34:55"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2302",
+                                                    "description": "Shipment arrived at self pick location, please pick up with the verification code",
+                                                    "cn_description": "快件已到達自提地點，請憑取件碼提取",
+                                                    "event_time": "2023-05-04T15:49:13"
+                                                },
+                                                {
+                                                    "order_type": "LMD",
+                                                    "tracking_number": "KE0000150284701",
+                                                    "status_type": "NORMAL",
+                                                    "status_number": "2500",
+                                                    "description": "Shipment is delivered. Thank you for using Kerry Express.",
+                                                    "cn_description": "派送完成，多謝使用嘉里快遞",
+                                                    "event_time": "2023-05-05T20:53:34"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Session expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Session expired": {
+                                        "value": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Get the milestone of the parcel by tracking number",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "schema": {
+                            "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjEzNDksInVzZXJOYW1lIjoibWljLmxtZHRlc3QiLCJpYXQiOjE2NjAyMDk2MTYsImV4cCI6MTY2MTQxOTIxNn0.VKcAx9kvGlueGs8OhJAL2_0p_cgikugc74G8aqbqkl8"
+                        },
+                        "description": "Token generated by /auth/login",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "packages": {
+                                            "tracking_number": "KECHK21098546101"
+                                        }
+                                    }
+                                },
+                                "properties": {
+                                    "packages": {
+                                        "type": "object",
+                                        "required": [
+                                            "tracking_number"
+                                        ],
+                                        "properties": {
+                                            "tracking_number": {
+                                                "type": "string",
+                                                "example": "KE0000150284701",
+                                                "description": "Unique package tracking number"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "packages"
+                                ]
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": {
+                                        "packages": {
+                                            "tracking_number": "KE0000150284701"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "packages": {
+                                            "tracking_number": "KECHK21098546101"
+                                        }
+                                    }
+                                },
+                                "properties": {
+                                    "packages": {
+                                        "type": "object",
+                                        "required": [
+                                            "tracking_number"
+                                        ],
+                                        "properties": {
+                                            "tracking_number": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "packages"
+                                ]
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": "{\n  \"packages\": {\n         \"tracking_number\": \"KECHK21098546101\"\n       }\n}"
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                }
+            },
+            "parameters": []
+        },
+        "/lmd/getsplocation": {
+            "get": {
+                "summary": "2.6 - Get Self Pick Location",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "location_code": "LL10135",
+                                            "type": "LOCKER",
+                                            "status": "ACTIVE",
+                                            "name_cn": "KE Locker 新屯門商場",
+                                            "name_en": "KE Locker Sun Tuen Mun Centre",
+                                            "address_cn": "新界屯門龍門路55－65號新屯門商場",
+                                            "address_en": "Sun Tuen Mun Centre, 55-56 Lung Mun Rd, Tuen Mun, New Territories",
+                                            "opening_hours": "[{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Mon\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Tue\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Wed\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Thu\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Fri\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Sat\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Sun\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Holiday\"}]",
+                                            "district": "新界",
+                                            "area": "屯門區",
+                                            "position": "114.111537,22.376421",
+                                            "updated_date": "2022-01-12 23:50:03",
+                                            "opening_hours_dat": [
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Mon"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Tue"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Wed"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Thu"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Fri"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Sat"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Sun"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Holiday"
+                                                }
+                                            ],
+                                            "agent_Code": "KELOCKER",
+                                            "selfpick_type": "KE_Locker"
+                                        }
+                                    },
+                                    "properties": {
+                                        "location_code": {
+                                            "type": "string",
+                                            "description": "Self-pick vendor/provider code"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "STORE",
+                                                "LOCKER"
+                                            ],
+                                            "description": "STORE: Pick-Up store / LOCKER : Self-pick locker\n"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "description": "ACTIVE: available"
+                                        },
+                                        "name_cn": {
+                                            "type": "string",
+                                            "description": "Self-pick location name in Chinese"
+                                        },
+                                        "name_en": {
+                                            "type": "string",
+                                            "description": "Self-pick location name in English"
+                                        },
+                                        "address_cn": {
+                                            "type": "string",
+                                            "description": "Self-pick location address in Chinese"
+                                        },
+                                        "address_en": {
+                                            "type": "string",
+                                            "description": "Self-pick location address in English"
+                                        },
+                                        "opening_hours": {
+                                            "type": "string",
+                                            "description": "Opening hours in text"
+                                        },
+                                        "district": {
+                                            "type": "string"
+                                        },
+                                        "area": {
+                                            "type": "string",
+                                            "description": "Self-pick locate area"
+                                        },
+                                        "position": {
+                                            "type": "string",
+                                            "description": "Geolocation of Selfpick Location"
+                                        },
+                                        "updated_date": {
+                                            "type": "string"
+                                        },
+                                        "opening_hours_dat": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "hr_from": {
+                                                        "type": "string",
+                                                        "description": "Opening hours (HHMM): start from "
+                                                    },
+                                                    "hr_to": {
+                                                        "type": "string",
+                                                        "description": "Opening hours (HHMM): End"
+                                                    },
+                                                    "day": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "Mon",
+                                                            "Tue",
+                                                            "Wed",
+                                                            "Thu",
+                                                            "Fri",
+                                                            "Sat",
+                                                            "Sun",
+                                                            "Holiday"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "hr_from",
+                                                    "hr_to",
+                                                    "day"
+                                                ]
+                                            }
+                                        },
+                                        "agent_Code": {
+                                            "type": "string",
+                                            "description": "Self-pick vendor/provider name"
+                                        },
+                                        "selfpick_type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Locker",
+                                                "Store",
+                                                "KE_Locker",
+                                                "MTR_Locker"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "location_code",
+                                        "type",
+                                        "status",
+                                        "name_cn",
+                                        "name_en",
+                                        "address_cn",
+                                        "address_en",
+                                        "opening_hours",
+                                        "district",
+                                        "area",
+                                        "position",
+                                        "updated_date",
+                                        "opening_hours_dat",
+                                        "agent_Code",
+                                        "selfpick_type"
+                                    ]
+                                },
+                                "examples": {
+                                    "Success Response": {
+                                        "value": {
+                                            "location_code": "LL10135",
+                                            "type": "LOCKER",
+                                            "status": "ACTIVE",
+                                            "name_cn": "KE Locker 新屯門商場",
+                                            "name_en": "KE Locker Sun Tuen Mun Centre",
+                                            "address_cn": "新界屯門龍門路55－65號新屯門商場",
+                                            "address_en": "Sun Tuen Mun Centre, 55-56 Lung Mun Rd, Tuen Mun, New Territories",
+                                            "opening_hours": "[{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Mon\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Tue\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Wed\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Thu\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Fri\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Sat\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Sun\"},{\"closing\":\"2359\",\"opening\":\"0000\",\"weekday\":\"Holiday\"}]",
+                                            "district": "新界",
+                                            "area": "屯門區",
+                                            "position": "114.111537,22.376421",
+                                            "updated_date": "2022-01-12 23:50:03",
+                                            "opening_hours_dat": [
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Mon"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Tue"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Wed"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Thu"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Fri"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Sat"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Sun"
+                                                },
+                                                {
+                                                    "hr_from": "0000",
+                                                    "hr_to": "2359",
+                                                    "day": "Holiday"
+                                                }
+                                            ],
+                                            "agent_Code": "KELOCKER",
+                                            "selfpick_type": "KE_Locker"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Session expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Session expired": {
+                                        "value": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "-1": {
+                        "description": "No Self Pick Agent available. Please contact key account.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "-1",
+                                            "message": "尚未配置spAgent,请联系管理员！",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "No Self Pick Agent available": {
+                                        "value": {
+                                            "code": "-1",
+                                            "message": "尚未配置spAgent,请联系管理员！",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "2.6",
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjEzNDksInVzZXJOYW1lIjoibWljLmxtZHRlc3QiLCJpYXQiOjE2NjAyMDk2MTYsImV4cCI6MTY2MTQxOTIxNn0.VKcAx9kvGlueGs8OhJAL2_0p_cgikugc74G8aqbqkl8"
+                        },
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token generated by /auth/login",
+                        "required": true
+                    }
+                ],
+                "description": "Get a list of available self-pick locations"
+            }
+        },
+        "/lmd/createpkrequest": {
+            "post": {
+                "summary": "2.7 - Pick Up Request",
+                "operationId": "2.7",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "booking_no": "KERP20210801001",
+                                            "code": 200,
+                                            "message": "success"
+                                        }
+                                    },
+                                    "properties": {
+                                        "booking_no": {
+                                            "type": "string",
+                                            "description": "Confirmed booking number"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        }
+                                    },
+                                    "required": [
+                                        "booking_no",
+                                        "code",
+                                        "message"
+                                    ]
+                                },
+                                "examples": {
+                                    "Success Response": {
+                                        "value": {
+                                            "booking_no": "KERP20210801001",
+                                            "code": 200,
+                                            "message": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Session expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    },
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Session expired": {
+                                        "value": {
+                                            "code": "402",
+                                            "message": "Session expired, please re-login.",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Create a pickup request (to collect packages)",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrZWNfaGtfb21zX3YyLjAiLCJ1c2VySWQiOjEzNDksInVzZXJOYW1lIjoibWljLmxtZHRlc3QiLCJpYXQiOjE2NjAyMDk2MTYsImV4cCI6MTY2MTQxOTIxNn0.VKcAx9kvGlueGs8OhJAL2_0p_cgikugc74G8aqbqkl8"
+                        },
+                        "description": "Token generated by /auth/login"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "creation_time": "2022-02-10 12:30:00",
+                                        "pickup_location": {
+                                            "contact_name": "Mic Testing",
+                                            "contact_no": "98765432",
+                                            "address": "Testing Location",
+                                            "district": "Causeway Bay",
+                                            "area": "HK"
+                                        },
+                                        "total_packages": 1,
+                                        "total_weight": 10,
+                                        "payment_type": "CR",
+                                        "pickup_schedule": {
+                                            "date": "2022-02-14",
+                                            "time": "AM"
+                                        },
+                                        "remark": "Testing"
+                                    }
+                                },
+                                "properties": {
+                                    "creation_time": {
+                                        "type": "string",
+                                        "description": "Creation time of pickup request"
+                                    },
+                                    "pickup_location": {
+                                        "type": "object",
+                                        "required": [
+                                            "contact_name",
+                                            "contact_no",
+                                            "address"
+                                        ],
+                                        "properties": {
+                                            "contact_name": {
+                                                "type": "string",
+                                                "description": "Contact name"
+                                            },
+                                            "contact_no": {
+                                                "type": "string",
+                                                "description": "Contact phone number"
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "description": "Pickup address"
+                                            },
+                                            "district": {
+                                                "type": "string",
+                                                "description": "Pickup District"
+                                            },
+                                            "area": {
+                                                "type": "string",
+                                                "description": "KL: Kowloon ; NT: New Territories ; HK: Hong Kong Island ; OL: Outlying Islands\n"
+                                            }
+                                        }
+                                    },
+                                    "total_packages": {
+                                        "type": "integer",
+                                        "description": "Total number of packages to be collected"
+                                    },
+                                    "total_weight": {
+                                        "type": "integer",
+                                        "description": "Total weight of packages to be collected (KG)"
+                                    },
+                                    "payment_type": {
+                                        "type": "string",
+                                        "description": "COD : Cash on delivery ; CR : Credit (Default)",
+                                        "enum": [
+                                            "COD",
+                                            "CR"
+                                        ]
+                                    },
+                                    "pickup_schedule": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date": {
+                                                "type": "string",
+                                                "description": "Desired Pick Up Date. Format YYYY-MM-DD"
+                                            },
+                                            "time": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "AM",
+                                                    "PM"
+                                                ],
+                                                "description": "AM (will pickup 9:00 – 12:00) ; PM (will pickup 14:00 – 18:00)"
+                                            }
+                                        }
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "description": "Message/special request for pickup driver"
+                                    }
+                                },
+                                "required": [
+                                    "creation_time",
+                                    "pickup_location",
+                                    "total_packages",
+                                    "payment_type"
+                                ]
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": {
+                                        "creation_time": "2022-02-10 12:30:00",
+                                        "pickup_location": {
+                                            "contact_name": "Mic Testing",
+                                            "contact_no": "98765432",
+                                            "address": "Testing Location",
+                                            "district": "Causeway Bay",
+                                            "area": "HK"
+                                        },
+                                        "total_packages": 1,
+                                        "total_weight": 10,
+                                        "payment_type": "CR",
+                                        "pickup_schedule": {
+                                            "date": "2022-02-14",
+                                            "time": "AM"
+                                        },
+                                        "remark": "Testing"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                }
+            },
+            "parameters": []
+        },
+        "Provided by Client": {
+            "post": {
+                "summary": "2.11 - Status Return (Webhook)",
+                "operationId": "2.11",
+                "responses": {},
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "example-1": {
+                                        "packages": [
+                                            {
+                                                "tracking_number": "KECHK00518512",
+                                                "reference_number": "Mictest001A",
+                                                "status_type": "NORMAL",
+                                                "status_number": "2302",
+                                                "description": "Ready for self pickup",
+                                                "event_time": "2022-05-23T09:34:14Z"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "properties": {
+                                    "packages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tracking_number": {
+                                                    "type": "string",
+                                                    "description": "Unique tracking number provided by KEHK"
+                                                },
+                                                "reference_number": {
+                                                    "type": "string",
+                                                    "description": "Client’s reference number"
+                                                },
+                                                "status_type": {
+                                                    "type": "string",
+                                                    "description": "The type of status"
+                                                },
+                                                "status_number": {
+                                                    "type": "string",
+                                                    "description": "Unique number represent the status"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "description": "The description of the status"
+                                                },
+                                                "event_time": {
+                                                    "type": "string",
+                                                    "description": "The timestamp of the status (GMT+8)"
+                                                }
+                                            },
+                                            "required": [
+                                                "tracking_number",
+                                                "reference_number",
+                                                "status_type",
+                                                "status_number",
+                                                "description",
+                                                "event_time"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "packages"
+                                ]
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": {
+                                        "packages": [
+                                            {
+                                                "tracking_number": "KECHK00518512",
+                                                "reference_number": "Mictest001A",
+                                                "status_type": "NORMAL",
+                                                "status_number": "2302",
+                                                "description": "Ready for self pickup",
+                                                "event_time": "2022-05-23T09:34:14Z"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                },
+                "description": "Status Return with Webhook"
+            },
+            "parameters": []
+        },
+        "/userapp/changeToSP": {
+            "post": {
+                "summary": "2.20 - Change the order to SP",
+                "operationId": "2.20",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "x-examples": {
+                                        "Example 1": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": "success"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example 1": {
+                                        "value": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "The parcel have processed at the Sorting Center",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "x-examples": {
+                                        "Example 1": {
+                                            "code": "409",
+                                            "message": "Processed at the sorting center",
+                                            "data": null
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example 1": {
+                                        "value": {
+                                            "code": "409",
+                                            "message": "Processed at the sorting center",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "TrackingNumber": {
+                                        "type": "string"
+                                    },
+                                    "selfpickLocation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "x-examples": {
+                                    "Example 1": {
+                                        "TrackingNumber": "KE0000100502601",
+                                        "selfpickLocation": "SEL1127"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": {
+                                        "TrackingNumber": "KE0000100502601",
+                                        "selfpickLocation": "SEL1127"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "description": ""
+                },
+                "description": "Change the order to SP",
+                "x-internal": false,
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer Testing"
+                        },
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Bearer Fix Token assign by KEHK"
+                    }
+                ]
+            },
+            "parameters": []
+        },
+        "/dest/create": {
+            "post": {
+                "summary": "2.21 - Create Return Order",
+                "operationId": "2.21",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "x-examples": {
+                                        "Example 1": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "pickup_number": "KEDT20230512004",
+                                                "tracking_number": "KE0000100771401"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "code": {
+                                            "type": "string",
+                                            "description": "Response code"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Response message"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pickup_number": {
+                                                    "type": "string",
+                                                    "description": "Confirmed booking number"
+                                                },
+                                                "tracking_number": {
+                                                    "type": "string",
+                                                    "description": "Master tracking number assigned"
+                                                },
+                                                "label_url": {
+                                                    "type": "string",
+                                                    "x-stoplight": {
+                                                        "id": "v2nuqb4ihrwk3"
+                                                    },
+                                                    "description": "url for download the shipping label"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example 1": {
+                                        "value": {
+                                            "code": "200",
+                                            "message": "success",
+                                            "data": {
+                                                "pickup_number": "KEDT20240312010",
+                                                "tracking_number": "KE0000101237001",
+                                                "label_url": "https://stg-openapi.kec-pp.com//label/downLoadFile/KE0000101237001"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "x-examples": {
+                                    "Example 1": {
+                                        "pickup_information": {
+                                            "contact_name": "Mic Testing",
+                                            "contact_no": "98765432",
+                                            "address": "Testing Location",
+                                            "district": "Causeway Bay",
+                                            "area": "HK",
+                                            "pickup_schedule": {
+                                                "date": "2023-05-14",
+                                                "time": "PM"
+                                            }
+                                        },
+                                        "return_information": {
+                                            "consignee_name": "Mich",
+                                            "consignee_phone": "12345678"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "pickup_information",
+                                    "return_information"
+                                ],
+                                "properties": {
+                                    "pickup_information": {
+                                        "type": "object",
+                                        "required": [
+                                            "contact_name",
+                                            "contact_no",
+                                            "address",
+                                            "district",
+                                            "area",
+                                            "pickup_schedule"
+                                        ],
+                                        "properties": {
+                                            "contact_name": {
+                                                "type": "string",
+                                                "description": "STRING (64) ; Pickup contact name"
+                                            },
+                                            "contact_no": {
+                                                "type": "string",
+                                                "description": "STRING (12) ; Pickup contact phone number",
+                                                "minLength": 8
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "description": "STRING (255) ; Pickup Address"
+                                            },
+                                            "district": {
+                                                "type": "string",
+                                                "description": "STRING (50) ; Pickup District"
+                                            },
+                                            "area": {
+                                                "type": "string",
+                                                "description": "STRING (2) ; KL: Kowloon ; NT: New Territories ; HK: Hong Kong Island ; OL: Outlying Islands",
+                                                "enum": [
+                                                    "KL",
+                                                    "NT",
+                                                    "HK",
+                                                    "OL"
+                                                ]
+                                            },
+                                            "pickup_schedule": {
+                                                "type": "object",
+                                                "required": [
+                                                    "date",
+                                                    "time"
+                                                ],
+                                                "properties": {
+                                                    "date": {
+                                                        "type": "string",
+                                                        "description": "STRING (10) ; Desired Pick Up Date. Format YYYY-MM-DD"
+                                                    },
+                                                    "time": {
+                                                        "type": "string",
+                                                        "description": "STRING (2) ; AM (will pickup 9:00 – 12:00) ; PM (will pickup 14:00 – 18:00)",
+                                                        "enum": [
+                                                            "AM",
+                                                            "PM"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "return_information": {
+                                        "type": "object",
+                                        "required": [
+                                            "consignee_name",
+                                            "consignee_phone"
+                                        ],
+                                        "properties": {
+                                            "consignee_name": {
+                                                "type": "string",
+                                                "description": "STRING (20) ; Consignee Name"
+                                            },
+                                            "consignee_phone": {
+                                                "type": "string",
+                                                "description": "STRING (64) ; Consignee contact phone number",
+                                                "minLength": 8
+                                            }
+                                        }
+                                    },
+                                    "package": {
+                                        "type": "object",
+                                        "x-stoplight": {
+                                            "id": "tmhfkx08alwhu"
+                                        },
+                                        "properties": {
+                                            "remark": {
+                                                "type": "string",
+                                                "x-stoplight": {
+                                                    "id": "kdpq7axw0z7bv"
+                                                },
+                                                "description": "Remark information"
+                                            },
+                                            "return_reference": {
+                                                "type": "string",
+                                                "x-stoplight": {
+                                                    "id": "eddtym3aly915"
+                                                },
+                                                "description": "Customer defined reference number of the Return Order"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Request Example": {
+                                    "value": {
+                                        "package": {
+                                            "return_reference": "TESTREtURN24031201",
+                                            "remark": "Hello world"
+                                        },
+                                        "pickup_information": {
+                                            "contact_name": "Pickup Contactperson",
+                                            "contact_no": "98765432",
+                                            "address": "3/F, Yeung Yiu Chung (No.6) Industrial Building, 19 Cheung Shun Street",
+                                            "district": "Lai Chi Kok",
+                                            "area": "KL",
+                                            "pickup_schedule": {
+                                                "date": "2023-05-14",
+                                                "time": "PM"
+                                            }
+                                        },
+                                        "return_information": {
+                                            "consignee_name": "Consignee Name",
+                                            "consignee_phone": "12345678"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    },
+                    "description": ""
+                },
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token generated by /auth/login",
+                        "required": true
+                    }
+                ],
+                "x-internal": false,
+                "description": "Create Return Order"
+            }
+        }
+    },
+    "components": {
+        "schemas": {},
+        "responses": {}
+    }
+}

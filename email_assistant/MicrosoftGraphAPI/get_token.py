@@ -34,8 +34,11 @@ def _getToken():
         authority=f"https://login.microsoftonline.com/{AZURE_APP_TENANT}/",
     )
 
-    token = instance.acquire_token_for_client(scopes=scopes)
-    access_token = token["access_token"]
+    token = instance.get_authorization_request_url(
+        scopes=scopes,
+        redirect_uri=REDIRECT_URI,
+    )
+    access_token = token
 
     if access_token:
         return access_token
